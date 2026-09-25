@@ -24,9 +24,6 @@
 (setq auto-save-default nil)
 (setq create-lockfiles nil)
 
-;; disable startup message
-(setq inhibit-startup-message t)
-
 ;; suppress warnings about lexbind-cookie
 (add-to-list 'warning-suppress-log-types
              '(files missing-lexbind-cookie))

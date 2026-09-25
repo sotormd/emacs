@@ -33,7 +33,7 @@ let
   emacsWrapped = pkgs.writeShellScript "emacs" ''
     export PATH=$PATH:${emacsPath}
 
-    ${pkgs.lib.getExe' emacs "emacs"} "$@"
+    ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
   '';
 
   emacsVanilla = pkgs.writeShellScript "emacsv" ''
