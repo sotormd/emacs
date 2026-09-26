@@ -85,8 +85,7 @@ let
   emacsAliases = pkgs.symlinkJoin {
     name = "emacs-aliases";
     paths = [
-      (pkgs.writeShellScriptBin "e" (emacsWrapped.text))
-      (pkgs.writeShellScriptBin "et" (emacsttyWrapped.text))
+      (pkgs.writeShellScriptBin "e" (emacsttyWrapped.text))
       (pkgs.writeShellScriptBin "vi" (emacsttyWrapped.text))
     ];
   };
