@@ -36,6 +36,9 @@ let
         # go
         e.go-mode
 
+        # markdown
+        e.markdown-mode
+
         # terminal emulator
         e.vterm
 
@@ -70,6 +73,10 @@ let
     pkgs.python3
     pkgs.pyright
     pkgs.black
+
+    # markdown
+    pkgs.marksman
+    pkgs.prettier
 
   ];
 

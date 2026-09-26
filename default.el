@@ -112,6 +112,16 @@
 (defun black-format-buffer () (generic-format-buffer "black" "-q" "--stdin-filename" buffer-file-name "-"))
 (add-hook 'python-mode-hook (lambda () (add-hook 'before-save-hook #'black-format-buffer nil t)))
 
+;; markdown - mode
+(autoload 'markdown-mode "markdown-mode" "Major mode for Markdown." t)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+;; markdown - marksman lsp
+(add-hook 'markdown-mode-hook #'eglot-ensure)
+(with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(rust-mode . ("marksman"))))
+;; markdown - prettier formatter
+(defun prettier-format-buffer () (interactive) (generic-format-buffer "prettier" "--stdin-filepath" buffer-file-name))
+(add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
+
 ;; end
 (provide 'default)
 ;;; default.el ends here
