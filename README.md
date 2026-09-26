@@ -4,24 +4,22 @@
 
 # usage
 
-1.  add this flake as an input
-
-    ```nix
-    inputs.emacs.url = "github:sotormd/emacs";
-    ```
-
-2.  use the packages provided by this flake
-
-    1.  `packages.x86_64-linux.default`
-    2.  `packages.aarch64-linux.default`
-
-or
-
-1. run directly
+run directly:
 
 ```bash
 nix run github:sotormd/emacs
 ```
+
+or import into another flake:
+
+```nix
+inputs.emacs.url = "github:sotormd/emacs";
+```
+
+available packages:
+
+- `packages.x86_64-linux.default`
+- `packages.aarch64-linux.default`
 
 # aliases
 
@@ -43,7 +41,7 @@ nix run github:sotormd/emacs
 
 # languages
 
-| Language | LSP             | Formatting |
+| Language | LSP             | Formatter  |
 | -------- | --------------- | ---------- |
 | Nix      | `nixd`          | `nixfmt`   |
 | Rust     | `rust-analyzer` | `rustfmt`  |
