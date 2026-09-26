@@ -23,11 +23,11 @@ available packages:
 
 # aliases
 
-| Binary                    | Aliases          |
-| ------------------------- | ---------------- |
-| Emacs PGTK                | `emacsg` `eg`    |
-| Emacs No X                | `emacs` `e` `vi` |
-| Emacs No X (unconfigured) | `emacsv`         |
+| Binary                   | Aliases          |
+| ------------------------ | ---------------- |
+| Emacs PGTK               | `emacsg` `eg`    |
+| Emacs TTY                | `emacs` `e` `vi` |
+| Emacs TTY (unconfigured) | `emacsv`         |
 
 # features
 
