@@ -3,9 +3,7 @@
 }:
 
 let
-  epkgs = pkgs.emacsPackagesFor pkgs.emacs-nox;
-
-  egpkgs = pkgs.emacsPackagesFor pkgs.emacs-pgtk;
+  epkgs = pkgs.emacsPackagesFor pkgs.emacs-pgtk;
 
   mkNord =
     e:
@@ -50,8 +48,6 @@ let
 
   emacs = epkgs.emacsWithPackages (e: [ (mkConfig e) ]);
 
-  emacsg = egpkgs.emacsWithPackages (e: [ (mkConfig e) ]);
-
   emacsPath = pkgs.lib.makeBinPath [
 
     # nix
@@ -83,26 +79,22 @@ let
   emacsWrapped = pkgs.writeShellScript "emacs" ''
     export PATH=$PATH:${emacsPath}
 
-    ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash "$@"
+    ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
   '';
 
   emacsAliases = pkgs.symlinkJoin {
     name = "emacs-aliases";
     paths = [
-      (pkgs.writeShellScriptBin "vi" (emacsWrapped.text))
       (pkgs.writeShellScriptBin "e" (emacsWrapped.text))
-      (pkgs.writeShellScriptBin "eg" (emacsgWrapped.text))
+      (pkgs.writeShellScriptBin "et" (emacsttyWrapped.text))
+      (pkgs.writeShellScriptBin "vi" (emacsttyWrapped.text))
     ];
   };
 
-  emacsgWrapped = pkgs.writeShellScriptBin "emacsg" ''
+  emacsttyWrapped = pkgs.writeShellScriptBin "emacs-tty" ''
     export PATH=$PATH:${emacsPath}
 
-    ${pkgs.lib.getExe' emacsg "emacs"} --no-splash "$@"
-  '';
-
-  emacsvWrapped = pkgs.writeShellScriptBin "emacsv" ''
-    ${pkgs.lib.getExe' pkgs.emacs "emacs"} "$@"
+    ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
   '';
 in
 
@@ -111,8 +103,7 @@ pkgs.symlinkJoin {
   paths = [
     emacs
     emacsAliases
-    emacsgWrapped
-    emacsvWrapped
+    emacsttyWrapped
   ];
 
   postBuild = ''
