@@ -3,7 +3,7 @@
 }:
 
 let
-  epkgs = pkgs.emacsPackagesFor pkgs.emacs;
+  epkgs = pkgs.emacsPackagesFor pkgs.emacs-nox;
 
   egpkgs = pkgs.emacsPackagesFor pkgs.emacs-pgtk;
 
