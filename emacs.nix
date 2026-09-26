@@ -94,7 +94,7 @@ let
   emacsttyWrapped = pkgs.writeShellScriptBin "emacs-tty" ''
     export PATH=$PATH:${emacsPath}
 
-    ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
+    ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash "$@"
   '';
 in
 
