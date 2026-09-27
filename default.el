@@ -118,7 +118,7 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 ;; markdown - marksman lsp
 (add-hook 'markdown-mode-hook #'eglot-ensure)
-(with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(rust-mode . ("marksman"))))
+(with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(markdown-mode . ("marksman"))))
 ;; markdown - prettier formatter
 (defun prettier-format-buffer () (interactive) (call-process-on-buffer "prettier" "--stdin-filepath" buffer-file-name))
 (add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
