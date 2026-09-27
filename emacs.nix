@@ -81,7 +81,6 @@ let
     (pkgs.aspellWithDicts (dicts: [
       dicts.en
       dicts.en-computers
-      dicts.en-science
     ]))
 
   ];
