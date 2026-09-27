@@ -123,10 +123,6 @@
 (defun prettier-format-buffer () (interactive) (call-process-on-buffer "prettier" "--stdin-filepath" buffer-file-name))
 (add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
 
-;; start server
-(require 'server)
-(server-start)
-
 ;; end
 (provide 'default)
 ;;; default.el ends here

@@ -76,11 +76,21 @@ let
 
   ];
 
-  emacsWrapped = pkgs.writeShellScript "emacs" ''
+  common = ''
     export PATH=$PATH:${emacsPath}
-    export EDITOR=${pkgs.lib.getExe' emacs "emacsclient"}
 
-    ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
+    if [ -z "$EMACS_SERVER_NAME" ]; then
+      export EMACS_SERVER_NAME="emacs-$(head -c 16 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 12)"
+    fi
+
+    export EDITOR="${pkgs.lib.getExe' emacs "emacsclient"} -s $XDG_RUNTIME_DIR/emacs/$EMACS_SERVER_NAME"
+
+    export server_name="$EMACS_SERVER_NAME"
+  '';
+
+  emacsWrapped = pkgs.writeShellScript "emacs" ''
+    ${common}
+    ${pkgs.lib.getExe' emacs "emacs"} --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
   '';
 
   emacsAliases = pkgs.symlinkJoin {
@@ -92,10 +102,8 @@ let
   };
 
   emacsttyWrapped = pkgs.writeShellScriptBin "emacs-tty" ''
-    export PATH=$PATH:${emacsPath}
-    export EDITOR=${pkgs.lib.getExe' emacs "emacsclient"}
-
-    ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash "$@"
+    ${common}
+    ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
   '';
 in
 
