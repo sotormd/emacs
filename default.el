@@ -5,24 +5,6 @@
 
 ;;; Code:
 
-;; nord theme
-(require 'nord-theme)
-(load-theme 'nord t)
-
-;; font
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
-(dolist (face (face-list)) (set-face-attribute face nil :family "JetBrains Mono" :height 110))
-
-;; fuzzy find
-(fido-vertical-mode 1)
-
-;; competions
-(require 'corfu)
-(global-corfu-mode 1)
-(setq corfu-auto t
-      corfu-auto-delay 0.5
-      corfu-auto-prefix 1)
-
 ;; hide menu bar
 (menu-bar-mode 0)
 
@@ -43,6 +25,24 @@
 (global-hl-line-mode 1)
 (add-hook 'vterm-mode-hook (lambda () (global-hl-line-mode -1)))
 
+;; nord theme
+(require 'nord-theme)
+(load-theme 'nord t)
+
+;; font
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono-11"))
+(dolist (face (face-list)) (set-face-attribute face nil :family "JetBrains Mono" :height 110))
+
+;; fuzzy find
+(fido-vertical-mode 1)
+
+;; competions
+(require 'corfu)
+(global-corfu-mode 1)
+(setq corfu-auto t
+      corfu-auto-delay 0.5
+      corfu-auto-prefix 1)
+
 ;; vterm
 (autoload 'vterm "vterm" nil t)
 
@@ -58,20 +58,21 @@
 ;; suppress warnings about lexbind-cookie
 (add-to-list 'warning-suppress-log-types '(files missing-lexbind-cookie))
 
-;; format a buffer
-(defun generic-format-buffer (command &rest args)
-  (save-excursion
-    (let ((output (generate-new-buffer "*formatter-output*")))
-      (unwind-protect
-	  (let ((status (apply #'call-process-region
-			       (point-min) (point-max)
-			       command nil output nil args)))
-	    (if (= status 0)
-		(progn
-		  (delete-region (point-min) (point-max))
-		  (insert-buffer-substring output))
-	      (error "%s failed" command)))
-	(kill-buffer output)))))
+;; call process on a buffer
+(defun call-process-on-buffer (command &rest args)
+  (let ((pos (point))
+	(output (generate-new-buffer "*call-process-on-buffer-temporary-output*")))
+    (unwind-protect
+	(let ((status (apply #'call-process-region
+			     (point-min) (point-max)
+			     command nil output nil args)))
+	  (if (= status 0)
+	      (progn
+		(delete-region (point-min) (point-max))
+		(insert-buffer-substring output)
+		(goto-char pos))
+	    (error "%s failed" command)))
+      (kill-buffer output))))
 
 ;; languages
 
@@ -82,7 +83,7 @@
 (add-hook 'nix-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
 ;; nix - nixfmt formatter
-(defun nixfmt-format-buffer () (interactive) (generic-format-buffer "nixfmt" "-"))
+(defun nixfmt-format-buffer () (interactive) (call-process-on-buffer "nixfmt" "-"))
 (add-hook 'nix-mode-hook (lambda () (add-hook 'before-save-hook #'nixfmt-format-buffer nil t)))
 
 ;; rust - mode
@@ -92,7 +93,7 @@
 (add-hook 'rust-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 ;; rust - rustfmt formatter
-(defun rustfmt-format-buffer () (interactive) (generic-format-buffer "rustfmt" "--emit" "stdout"))
+(defun rustfmt-format-buffer () (interactive) (call-process-on-buffer "rustfmt" "--emit" "stdout"))
 (add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook #'rustfmt-format-buffer nil t)))
 
 ;; go - go mode
@@ -102,14 +103,14 @@
 (add-hook 'go-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
 ;; go - gofmt formatter
-(defun gofmt-format-buffer () (interactive) (generic-format-buffer "gofmt"))
+(defun gofmt-format-buffer () (interactive) (call-process-on-buffer "gofmt"))
 (add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook #'gofmt-format-buffer nil t)))
 
 ;; python - pyright lsp
 (add-hook 'python-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
 ;; python - black formatter
-(defun black-format-buffer () (generic-format-buffer "black" "-q" "--stdin-filename" buffer-file-name "-"))
+(defun black-format-buffer () (call-process-on-buffer "black" "-q" "--stdin-filename" buffer-file-name "-"))
 (add-hook 'python-mode-hook (lambda () (add-hook 'before-save-hook #'black-format-buffer nil t)))
 
 ;; markdown - mode
@@ -119,7 +120,7 @@
 (add-hook 'markdown-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(rust-mode . ("marksman"))))
 ;; markdown - prettier formatter
-(defun prettier-format-buffer () (interactive) (generic-format-buffer "prettier" "--stdin-filepath" buffer-file-name))
+(defun prettier-format-buffer () (interactive) (call-process-on-buffer "prettier" "--stdin-filepath" buffer-file-name))
 (add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
 
 ;; end
