@@ -1,7 +1,6 @@
 ;;; nord-theme.el --- An arctic, north-bluish clean and elegant theme
 
 ;; Copyright (c) 2016-present Sven Greb <development@svengreb.de> (https://www.svengreb.de)
-
 ;; Title: Nord Theme
 ;; Project: nord-emacs
 ;; Version: 0.6.0
@@ -298,6 +297,14 @@
     `(term-color-yellow ((,class (:foreground ,nord13 :background ,nord13))))
     `(term-color-green ((,class (:foreground ,nord14 :background ,nord14))))
     `(term-color-magenta ((,class (:foreground ,nord15 :background ,nord15))))
+    `(term-color-bright-black ((,class (:foreground ,nord1 :background ,nord1))))
+    `(term-color-bright-white ((,class (:foreground ,nord5 :background ,nord5))))
+    `(term-color-bright-cyan ((,class (:foreground ,nord7 :background ,nord7))))
+    `(term-color-bright-blue ((,class (:foreground ,nord8 :background ,nord8))))
+    `(term-color-bright-red ((,class (:foreground ,nord11 :background ,nord11))))
+    `(term-color-bright-yellow ((,class (:foreground ,nord13 :background ,nord13))))
+    `(term-color-bright-green ((,class (:foreground ,nord14 :background ,nord14))))
+    `(term-color-bright-magenta ((,class (:foreground ,nord15 :background ,nord15))))
     `(tool-bar ((,class (:foreground ,nord4 :background ,nord3))))
     `(tooltip ((,class (:foreground ,nord0 :background ,nord4))))
     `(trailing-whitespace ((,class (:foreground ,nord3))))
@@ -717,7 +724,7 @@
     `(corfu-current ((,class (:background ,nord3 :foreground ,nord6))))
     `(corfu-border ((,class (:background ,nord2))))
     `(corfu-annotations ((,class (:background ,nord9))))
-
+    
     ;; > perspective
     `(persp-selected-face ((,class (:foreground ,nord8 :weight bold))))))
 
