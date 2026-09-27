@@ -43,9 +43,6 @@ let
         # completions
         e.corfu
 
-        # $EDITOR
-        e.with-editor
-
       ];
     };
 
@@ -77,16 +74,11 @@ let
     pkgs.marksman
     pkgs.prettier
 
-    # dictionary
-    (pkgs.aspellWithDicts (dicts: [
-      dicts.en
-      dicts.en-computers
-    ]))
-
   ];
 
   emacsWrapped = pkgs.writeShellScript "emacs" ''
     export PATH=$PATH:${emacsPath}
+    export EDITOR=${pkgs.lib.getExe' emacs "emacsclient"}
 
     ${pkgs.lib.getExe' emacs "emacs"} --no-splash "$@"
   '';
@@ -101,6 +93,7 @@ let
 
   emacsttyWrapped = pkgs.writeShellScriptBin "emacs-tty" ''
     export PATH=$PATH:${emacsPath}
+    export EDITOR=${pkgs.lib.getExe' emacs "emacsclient"}
 
     ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash "$@"
   '';

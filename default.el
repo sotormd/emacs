@@ -45,7 +45,6 @@
 
 ;; vterm
 (autoload 'vterm "vterm" nil t)
-(add-hook 'vterm-mode-hook  'with-editor-export-editor)
 
 ;; trust content
 ;; so that we can use flymake
@@ -123,6 +122,10 @@
 ;; markdown - prettier formatter
 (defun prettier-format-buffer () (interactive) (call-process-on-buffer "prettier" "--stdin-filepath" buffer-file-name))
 (add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
+
+;; start server
+(require 'server)
+(server-start)
 
 ;; end
 (provide 'default)
