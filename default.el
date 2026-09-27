@@ -40,11 +40,12 @@
 (require 'corfu)
 (global-corfu-mode 1)
 (setq corfu-auto t
-      corfu-auto-delay 0.5
+      corfu-auto-delay 0.3
       corfu-auto-prefix 1)
 
 ;; vterm
 (autoload 'vterm "vterm" nil t)
+(add-hook 'vterm-mode-hook  'with-editor-export-editor)
 
 ;; trust content
 ;; so that we can use flymake

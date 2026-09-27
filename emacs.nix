@@ -43,6 +43,9 @@ let
         # completions
         e.corfu
 
+        # $EDITOR
+        e.with-editor
+
       ];
     };
 
@@ -73,6 +76,13 @@ let
     # markdown
     pkgs.marksman
     pkgs.prettier
+
+    # dictionary
+    (pkgs.aspellWithDicts (dicts: [
+      dicts.en
+      dicts.en-computers
+      dicts.en-science
+    ]))
 
   ];
 
