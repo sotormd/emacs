@@ -21,9 +21,8 @@
 ;; column numbers
 (column-number-mode 1)
 
-;; highlight current line
-(global-hl-line-mode 1)
-(add-hook 'vterm-mode-hook (lambda () (global-hl-line-mode -1)))
+;; dont highlight current line
+(global-hl-line-mode 0)
 
 ;; nord theme
 (require 'nord-theme)
