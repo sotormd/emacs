@@ -108,15 +108,33 @@ let
 in
 
 pkgs.symlinkJoin {
+
+  # we need pname and version for bundling
+  pname = "emacs";
+  version = "0";
+  meta.mainProgram = "emacs";
+
+  # real symlinkJoin name
   name = "emacs";
+
+  # paths to join
   paths = [
+
+    # emacs pgtk
     emacs
+
+    # various aliases
     emacsAliases
+
+    # emacs pgtk with -nw
     emacsttyWrapped
+
   ];
 
+  # replace emacs binary with our wrapper
   postBuild = ''
     rm -f $out/bin/emacs
     ln -s ${emacsWrapped} $out/bin/emacs  
   '';
+
 }
