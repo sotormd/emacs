@@ -25,6 +25,12 @@
 ;; hide context menus
 (context-menu-mode 0)
 
+;; hide mouse-driven menus
+(global-set-key [C-down-mouse-1] #'ignore)
+(global-set-key [C-down-mouse-2] #'ignore)
+(global-set-key [C-down-mouse-3] #'ignore)
+(global-set-key [S-down-mouse-1] #'ignore)
+
 ;; line numbers
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
