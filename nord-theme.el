@@ -532,6 +532,11 @@
     `(flycheck-info ((,class (:underline (:style wave :color ,nord8)))))
     `(flycheck-warning ((,class (:underline (:style wave :color ,nord13)))))
 
+    ;; > Flymake
+    `(flymake-error ((,class (:underline (:style wave :color ,nord11)))))
+    `(flymake-warning ((,class (:underline (:style wave :color ,nord13)))))
+    `(flymake-note ((,class :underline (:style wave :color ,nord14))))
+    
     ;; > Git Gutter
     `(git-gutter:modified ((,class (:foreground ,nord13))))
     `(git-gutter:added ((,class (:foreground ,nord14))))
