@@ -11,8 +11,19 @@
 ;; hide tool bar
 (tool-bar-mode 0)
 
-;; hide scroll back
+;; hide scroll bar
 (scroll-bar-mode 0)
+(horizontal-scroll-bar-mode 0)
+
+;; hide tooltips
+(tooltip-mode 0)
+
+;; use minibuffer instead of popups
+(setq use-dialog-box nil)
+(setq use-file-dialog nil)
+
+;; hide context menus
+(context-menu-mode 0)
 
 ;; line numbers
 (setq display-line-numbers-type 'relative)
@@ -39,7 +50,7 @@
 (require 'corfu)
 (global-corfu-mode 1)
 (setq corfu-auto t
-      corfu-auto-delay 0.3
+      corfu-auto-delay 0.1
       corfu-auto-prefix 1)
 
 ;; vterm
@@ -73,6 +84,48 @@
 	    (error "%s failed" command)))
       (kill-buffer output))))
 
+;; format-mode - format a buffer
+(defvar-local format-mode-function nil)
+
+(defun format-mode--format-buffer () (when format-mode-function (funcall format-mode-function)))
+
+(define-minor-mode format-mode
+  "Format the current buffer on save."
+  :lighter " Fmt"
+  (if format-mode
+      (add-hook 'before-save-hook #'format-mode--format-buffer nil t)
+    (remove-hook 'before-save-hook #'format-mode--format-buffer t)))
+
+(defun black-format-buffer ()
+  "Format the current buffer with black."
+  (interactive)
+  (call-process-on-buffer
+   "black" "-q" "--stdin-filename" buffer-file-name "-"))
+
+(defun nixfmt-format-buffer ()
+  "Format the current buffer with nixfmt."
+  (interactive)
+  (call-process-on-buffer
+   "nixfmt" "-"))
+
+(defun rustfmt-format-buffer ()
+  "Format the current buffer with rustfmt."
+  (interactive)
+  (call-process-on-buffer
+   "rustfmt" "--emit" "stdout"))
+
+(defun gofmt-format-buffer ()
+  "Format the current buffer with gofmt."
+  (interactive)
+  (call-process-on-buffer
+   "gofmt"))
+
+(defun prettier-format-buffer ()
+  "Format the current buffer with prettier."
+  (interactive)
+  (call-process-on-buffer
+   "prettier" "--stdin-filepath" buffer-file-name))
+
 ;; languages
 
 ;; nix - mode
@@ -82,8 +135,7 @@
 (add-hook 'nix-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
 ;; nix - nixfmt formatter
-(defun nixfmt-format-buffer () (interactive) (call-process-on-buffer "nixfmt" "-"))
-(add-hook 'nix-mode-hook (lambda () (add-hook 'before-save-hook #'nixfmt-format-buffer nil t)))
+(add-hook 'nix-mode-hook (lambda () (setq-local format-mode-function #'nixfmt-format-buffer) (format-mode 1)))
 
 ;; rust - mode
 (autoload 'rust-mode "rust-mode" "Major mode for Rust." t)
@@ -92,8 +144,7 @@
 (add-hook 'rust-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
 ;; rust - rustfmt formatter
-(defun rustfmt-format-buffer () (interactive) (call-process-on-buffer "rustfmt" "--emit" "stdout"))
-(add-hook 'rust-mode-hook (lambda () (add-hook 'before-save-hook #'rustfmt-format-buffer nil t)))
+(add-hook 'rust-mode-hook (lambda () (setq-local format-mode-function #'rustfmt-format-buffer) (format-mode 1)))
 
 ;; go - go mode
 (autoload 'go-mode "go-mode" "Major mode for Go." t)
@@ -102,15 +153,13 @@
 (add-hook 'go-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
 ;; go - gofmt formatter
-(defun gofmt-format-buffer () (interactive) (call-process-on-buffer "gofmt"))
-(add-hook 'go-mode-hook (lambda () (add-hook 'before-save-hook #'gofmt-format-buffer nil t)))
+(add-hook 'go-mode-hook (lambda () (setq-local format-mode-function #'gofmt-format-buffer) (format-mode 1)))
 
 ;; python - pyright lsp
 (add-hook 'python-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
 ;; python - black formatter
-(defun black-format-buffer () (call-process-on-buffer "black" "-q" "--stdin-filename" buffer-file-name "-"))
-(add-hook 'python-mode-hook (lambda () (add-hook 'before-save-hook #'black-format-buffer nil t)))
+(add-hook 'python-mode-hook (lambda () (setq-local format-mode-function #'black-format-buffer) (format-mode 1)))
 
 ;; markdown - mode
 (autoload 'markdown-mode "markdown-mode" "Major mode for Markdown." t)
@@ -119,8 +168,7 @@
 (add-hook 'markdown-mode-hook #'eglot-ensure)
 (with-eval-after-load 'eglot (add-to-list 'eglot-server-programs '(markdown-mode . ("marksman"))))
 ;; markdown - prettier formatter
-(defun prettier-format-buffer () (interactive) (call-process-on-buffer "prettier" "--stdin-filepath" buffer-file-name))
-(add-hook 'markdown-mode-hook (lambda () (add-hook 'before-save-hook #'prettier-format-buffer nil t)))
+(add-hook 'markdown-mode-hook (lambda () (setq-local format-mode-function #'prettier-format-buffer) (format-mode 1)))
 
 ;; end
 (provide 'default)
