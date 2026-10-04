@@ -1,9 +1,28 @@
 {
-  pkgs ? import <nixpkgs> { },
+  lib,
+  emacsPackagesFor,
+  emacs-pgtk,
+  lix,
+  nixd,
+  nixfmt,
+  rustc,
+  cargo,
+  rust-analyzer,
+  rustfmt,
+  go,
+  gopls,
+  python3,
+  pyright,
+  black,
+  marksman,
+  prettier,
+  symlinkJoin,
+  writeShellScript,
+  writeShellScriptBin,
 }:
 
 let
-  epkgs = pkgs.emacsPackagesFor pkgs.emacs-pgtk;
+  epkgs = emacsPackagesFor emacs-pgtk;
 
   mkNord =
     e:
@@ -45,31 +64,31 @@ let
 
   emacs = epkgs.emacsWithPackages (e: [ (mkConfig e) ]);
 
-  emacsPath = pkgs.lib.makeBinPath [
+  emacsPath = lib.makeBinPath [
 
     # nix
-    pkgs.lix
-    pkgs.nixd
-    pkgs.nixfmt
+    lix
+    nixd
+    nixfmt
 
     # rust
-    pkgs.rustc
-    pkgs.cargo
-    pkgs.rust-analyzer
-    pkgs.rustfmt
+    rustc
+    cargo
+    rust-analyzer
+    rustfmt
 
     # go
-    pkgs.go
-    pkgs.gopls
+    go
+    gopls
 
     # python
-    pkgs.python3
-    pkgs.pyright
-    pkgs.black
+    python3
+    pyright
+    black
 
     # markdown
-    pkgs.marksman
-    pkgs.prettier
+    marksman
+    prettier
 
   ];
 
@@ -80,31 +99,31 @@ let
       export EMACS_SERVER_NAME="emacs-$(head -c 16 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9' | head -c 12)"
     fi
 
-    export EDITOR="${pkgs.lib.getExe' emacs "emacsclient"} -s $XDG_RUNTIME_DIR/emacs/$EMACS_SERVER_NAME"
+    export EDITOR="${lib.getExe' emacs "emacsclient"} -s $XDG_RUNTIME_DIR/emacs/$EMACS_SERVER_NAME"
 
     export server_name="$EMACS_SERVER_NAME"
   '';
 
-  emacsWrapped = pkgs.writeShellScript "emacs" ''
+  emacsWrapped = writeShellScript "emacs" ''
     ${common}
-    ${pkgs.lib.getExe' emacs "emacs"} --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
+    ${lib.getExe' emacs "emacs"} --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
   '';
 
-  emacsAliases = pkgs.symlinkJoin {
+  emacsAliases = symlinkJoin {
     name = "emacs-aliases";
     paths = [
-      (pkgs.writeShellScriptBin "e" (emacsttyWrapped.text))
-      (pkgs.writeShellScriptBin "vi" (emacsttyWrapped.text))
+      (writeShellScriptBin "e" (emacsttyWrapped.text))
+      (writeShellScriptBin "vi" (emacsttyWrapped.text))
     ];
   };
 
-  emacsttyWrapped = pkgs.writeShellScriptBin "emacs-tty" ''
+  emacsttyWrapped = writeShellScriptBin "emacs-tty" ''
     ${common}
-    ${pkgs.lib.getExe' emacs "emacs"} -nw --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
+    ${lib.getExe' emacs "emacs"} -nw --no-splash --eval "(setq server-name \"$server_name\")" --eval "(server-start)" "$@"
   '';
 in
 
-pkgs.symlinkJoin {
+symlinkJoin {
 
   # we need pname and version for bundling
   pname = "emacs";
