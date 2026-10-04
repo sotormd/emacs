@@ -59,9 +59,6 @@
       corfu-auto-delay 0.1
       corfu-auto-prefix 1)
 
-;; vterm
-(autoload 'vterm "vterm" nil t)
-
 ;; trust content
 ;; so that we can use flymake
 (setq trusted-content :all)

@@ -37,9 +37,6 @@ let
         # markdown
         e.markdown-mode
 
-        # terminal emulator
-        e.vterm
-
         # completions
         e.corfu
 

@@ -30,9 +30,9 @@ available packages:
 
 # features
 
+- EMACS!
 - fido fuzzy find
 - corfu completions
-- vterm terminal emulator
 - nord theme
 - eglot lsp client
 - flymake linting
